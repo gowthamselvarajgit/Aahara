@@ -1,28 +1,16 @@
-# Architecture Overview
+# Aahara Architecture
 
-Aahara is organized as a **monorepo** containing two primary sub‑projects:
+## Overview
+Aahara is a local-first, API-driven nutrition and fitness tracking application. The architecture is split into a Spring Boot (Java 21) backend providing REST APIs and a React Native mobile application utilizing SQLite for local-first operations.
 
-```
-Aahara/
-├─ mobile/          # React Native (TypeScript) client
-├─ backend/         # Spring Boot (Java) API server
-├─ docs/            # Project documentation
-└─ ...
-```
+## Stack
+- **Backend:** Java 21, Spring Boot 4.0.8, Maven, MySQL 8.x
+- **Database Migrations:** Flyway
+- **Mobile (Future):** React Native, TypeScript, SQLite
+- **Communication:** REST APIs with JSON
 
-### Local‑First Flow
-1. **React Native** stores user data in an on‑device **SQLite** database.
-2. An **application sync layer** (future) keeps a copy of the data locally and periodically pushes/pulls to the **backend REST API**.
-3. The **backend** persists data in **MySQL** and provides additional business‑logic, authentication, and integration points.
-
-The mobile app can operate fully offline; all core calculations (once implemented) will run on‑device using the local copy of the food and exercise datasets.
-
-### Backend Layered Architecture (Spring Boot)
-- **Controller** – HTTP endpoint definitions.
-- **Service** – Business logic, transaction handling.
-- **Domain / Model** – Core entities.
-- **Repository** – JPA data access.
-- **DTO / Mapper** – API contracts and conversion.
-- **Configuration** – Beans, security, Flyway, validation.
-
-The layered approach keeps concerns separate, eases testing, and supports future extensions (e.g., micro‑services).
+## Principles
+1. **Deterministic Calculation:** All nutritional and fitness metrics are calculated transparently without AI black-boxes.
+2. **Historical Immutability:** Food and workout logs capture snapshots of data at the time of entry. Updates to master data do not retroactively alter user history.
+3. **Local-First Synchronization:** The database schema employs UUIDs (v4) for all primary keys to facilitate offline creation and conflict-free synchronization.
+4. **Data Provenance:** Every piece of master food and exercise data retains a trace to its origin (e.g., IFCT, USDA).
