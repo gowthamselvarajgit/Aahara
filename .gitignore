@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+# Build outputs
+android/app/build/
+ios/build/
+# Gradle
+.gradle/
+# Java
+target/
+*.class
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+# Logs
+*.log
+# Env files
+.env
+# Secrets
+*.key
+# MacOS
+.DS_Store
+# Windows
+Thumbs.db
