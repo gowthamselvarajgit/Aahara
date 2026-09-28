@@ -7,13 +7,33 @@ import { FoodScreen } from '../screens/FoodScreen';
 import { WorkoutScreen } from '../screens/WorkoutScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { useTheme } from '../theme/useTheme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
+  const theme = useTheme();
+
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator 
+      screenOptions={{ 
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: theme.surface,
+          borderTopColor: theme.border,
+          elevation: 0,
+          shadowOpacity: 0,
+          height: 60,
+          paddingBottom: 10,
+        },
+        tabBarActiveTintColor: theme.primary,
+        tabBarInactiveTintColor: theme.textMuted,
+        tabBarLabelStyle: {
+          fontWeight: '600',
+        }
+      }}
+    >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Food" component={FoodScreen} />
       <Tab.Screen name="Workout" component={WorkoutScreen} />

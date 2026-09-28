@@ -19,9 +19,9 @@ export const PercentageBadge: React.FC<Props> = ({ current, target, unit, label 
   return (
     <View style={[styles.container, { backgroundColor: theme.surface, borderColor: theme.border }]}>
       <AppText variant="caption" color="muted">{label}</AppText>
-      <AppText variant="h2">{current} / {target} {unit}</AppText>
-      <View style={[styles.badge, { backgroundColor: theme.primary }]}>
-        <AppText color="default" style={{ color: '#fff' }} variant="caption">
+      <AppText variant="metric">{current} / {target} {unit}</AppText>
+      <View style={[styles.badge, { backgroundColor: theme.primarySoft }]}>
+        <AppText color="brand" variant="caption">
           {percentage}%
         </AppText>
       </View>
