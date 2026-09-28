@@ -19,5 +19,15 @@ public class Food {
     private String sourceUrl;
     private Boolean isVerified;
     
+    private String ownerUserId;
+    private String datasetVersion;
+    private String sourceRecordId;
+    private String license;
+    @Enumerated(EnumType.STRING)
+    private FoodStatus status;
+    
+    public enum FoodStatus { ACTIVE, DEPRECATED, LEGAL_REVIEW_REQUIRED, USER_CREATED, INTERNAL_CURATED }
+    
     public enum FoodState { RAW, COOKED, BOILED, FRIED, STEAMED, BAKED, PREPARED, PACKAGED, UNKNOWN }
+
 }

@@ -25,6 +25,8 @@ public class DiaryEntryServiceIntegrationTest {
     @Autowired
     private DiaryEntryService diaryService;
     @Autowired
+    private DiaryEntryRepository diaryRepository;
+    @Autowired
     private FoodRepository foodRepository;
     @Autowired
     private FoodNutrientRepository nutrientRepository;
@@ -45,6 +47,8 @@ public class DiaryEntryServiceIntegrationTest {
         testFood = foodRepository.save(Food.builder()
             .id(UUID.randomUUID().toString())
             .name("Apple")
+            .source("USDA")
+            .datasetVersion("v1")
             .build());
 
         nutrientRepository.save(FoodNutrient.builder()
@@ -68,7 +72,35 @@ public class DiaryEntryServiceIntegrationTest {
         assertNotNull(res.getId());
         assertEquals(0, res.getCaloriesSnapshot().compareTo(new BigDecimal("78.00")));
         assertEquals("Apple", res.getFoodNameSnapshot());
-        assertTrue(res.getNutrientsSnapshotJson().contains("\"CALORIES\":78.00"));
+        assertTrue(res.getNutrientsSnapshotJson().contains("\"CALORIES\""));
+        assertTrue(res.getNutrientsSnapshotJson().contains("78.00"));
+        assertTrue(res.getNutrientsSnapshotJson().contains("\"schemaVersion\":1"));
+        assertTrue(res.getNutrientsSnapshotJson().contains("\"USDA\""));
+        assertTrue(res.getNutrientsSnapshotJson().contains("\"v1\""));
+    }
+
+    @Test
+    public void testCreateEntry_MasterFoodMutationDoesNotAlterSnapshot() {
+        DiaryEntryRequestDto req = new DiaryEntryRequestDto();
+        req.setEntryDate(LocalDate.now());
+        req.setMealType(MealType.SNACK);
+        req.setFoodId(testFood.getId());
+        req.setQuantity(new BigDecimal("100"));
+
+        DiaryEntryResponseDto res = diaryService.createEntry(testUser.getId(), req);
+        DiaryEntry savedEntry = diaryRepository.findById(res.getId()).get();
+
+        String originalSnapshot = savedEntry.getNutrientsSnapshotJson();
+
+        // Mutate Master Food
+        testFood.setName("Green Apple");
+        foodRepository.save(testFood);
+
+        // Fetch again, snapshot should be untouched
+        DiaryEntry fetchedEntry = diaryRepository.findById(res.getId()).get();
+        assertEquals(originalSnapshot, fetchedEntry.getNutrientsSnapshotJson());
+        assertTrue(fetchedEntry.getNutrientsSnapshotJson().contains("\"Apple\"")); // Old name
+        assertFalse(fetchedEntry.getNutrientsSnapshotJson().contains("\"Green Apple\""));
     }
 
     @Test
