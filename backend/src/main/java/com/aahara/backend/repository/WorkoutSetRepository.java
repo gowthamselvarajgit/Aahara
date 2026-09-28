@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface WorkoutSetRepository extends JpaRepository<WorkoutSet, String> {
     List<WorkoutSet> findBySessionIdOrderBySetNumberAsc(String sessionId);
+    Optional<WorkoutSet> findBySessionIdAndClientId(String sessionId, String clientId);
 }

@@ -17,4 +17,5 @@ public interface WorkoutSessionRepository extends JpaRepository<WorkoutSession, 
     Page<WorkoutSession> findByUserIdAndStartTimeBetweenOrderByStartTimeDesc(@Param("userId") String userId, @Param("fromTime") LocalDateTime fromTime, @Param("toTime") LocalDateTime toTime, Pageable pageable);
     
     Optional<WorkoutSession> findByIdAndUserId(String id, String userId);
+    Optional<WorkoutSession> findByUserIdAndClientId(String userId, String clientId);
 }

@@ -25,5 +25,6 @@ public class DiaryEntryRequestDto {
     @Positive(message = "Quantity must be positive")
     private BigDecimal quantity;
     
-    private String clientId; // For idempotency
+    private String clientId;
+    private Integer version;
 }

@@ -26,6 +26,15 @@ public class WorkoutSetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(setService.createSet(getUserId(authentication), sessionId, request));
     }
 
+    @PutMapping("/{setId}")
+    public ResponseEntity<WorkoutSetResponseDto> updateSet(
+            Authentication authentication,
+            @PathVariable String sessionId,
+            @PathVariable String setId,
+            @Valid @RequestBody WorkoutSetRequestDto request) {
+        return ResponseEntity.ok(setService.updateSet(getUserId(authentication), sessionId, setId, request));
+    }
+
     @GetMapping
     public ResponseEntity<List<WorkoutSetResponseDto>> getSets(
             Authentication authentication, 

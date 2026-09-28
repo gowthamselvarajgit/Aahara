@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,9 +24,15 @@ public class WorkoutSetService {
 
     @Transactional
     public WorkoutSetResponseDto createSet(String userId, String sessionId, WorkoutSetRequestDto request) {
-        // Enforce ownership through the parent session
         WorkoutSession session = sessionRepository.findByIdAndUserId(sessionId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("Session not found or unauthorized"));
+                
+        if (request.getClientId() != null) {
+            Optional<WorkoutSet> existing = setRepository.findBySessionIdAndClientId(sessionId, request.getClientId());
+            if (existing.isPresent()) {
+                return mapToDto(existing.get());
+            }
+        }
                 
         WorkoutSet set = WorkoutSet.builder()
             .id(UUID.randomUUID().toString())
@@ -42,6 +49,32 @@ public class WorkoutSetService {
             .clientId(request.getClientId())
             .build();
             
+        return mapToDto(setRepository.save(set));
+    }
+
+    @Transactional
+    public WorkoutSetResponseDto updateSet(String userId, String sessionId, String setId, WorkoutSetRequestDto request) {
+        sessionRepository.findByIdAndUserId(sessionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Session not found or unauthorized"));
+                
+        WorkoutSet set = setRepository.findById(setId)
+                .orElseThrow(() -> new IllegalArgumentException("Set not found"));
+                
+        if (!set.getSessionId().equals(sessionId)) {
+            throw new IllegalArgumentException("Set does not belong to session");
+        }
+        
+        set.setExerciseId(request.getExerciseId());
+        set.setSetNumber(request.getSetNumber());
+        set.setSetType(request.getSetType());
+        set.setWeightKg(request.getWeightKg());
+        set.setReps(request.getReps());
+        set.setDurationSeconds(request.getDurationSeconds());
+        set.setDistanceMeters(request.getDistanceMeters());
+        set.setRpe(request.getRpe());
+        set.setIsCompleted(request.getIsCompleted());
+        if (request.getVersion() != null) set.setVersion(request.getVersion());
+        
         return mapToDto(setRepository.save(set));
     }
 

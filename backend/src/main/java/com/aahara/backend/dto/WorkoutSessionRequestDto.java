@@ -13,4 +13,5 @@ public class WorkoutSessionRequestDto {
     private String routineId;
     private String notes;
     private String clientId;
+    private Integer version;
 }

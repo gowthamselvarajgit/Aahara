@@ -16,4 +16,5 @@ public class WaterLogRequestDto {
     private Integer amountMl;
     
     private String clientId;
+    private Integer version;
 }

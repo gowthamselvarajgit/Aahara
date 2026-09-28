@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,13 @@ public class WaterLogService {
 
     @Transactional
     public WaterLogResponseDto createLog(String userId, WaterLogRequestDto request) {
+        if (request.getClientId() != null) {
+            Optional<WaterLog> existing = waterLogRepository.findByUserIdAndClientId(userId, request.getClientId());
+            if (existing.isPresent()) {
+                return mapToDto(existing.get());
+            }
+        }
+
         WaterLog log = WaterLog.builder()
             .id(UUID.randomUUID().toString())
             .userId(userId)
@@ -28,6 +36,16 @@ public class WaterLogService {
             .amountMl(request.getAmountMl())
             .clientId(request.getClientId())
             .build();
+        return mapToDto(waterLogRepository.save(log));
+    }
+
+    @Transactional
+    public WaterLogResponseDto updateLog(String userId, String id, WaterLogRequestDto request) {
+        WaterLog log = waterLogRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new IllegalArgumentException("Water log not found or unauthorized"));
+        log.setEntryDate(request.getEntryDate());
+        log.setAmountMl(request.getAmountMl());
+        if (request.getVersion() != null) log.setVersion(request.getVersion());
         return mapToDto(waterLogRepository.save(log));
     }
 

@@ -24,6 +24,11 @@ public class WaterLogController {
         return ResponseEntity.status(HttpStatus.CREATED).body(waterLogService.createLog(getUserId(authentication), request));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<WaterLogResponseDto> updateLog(Authentication authentication, @PathVariable String id, @Valid @RequestBody WaterLogRequestDto request) {
+        return ResponseEntity.ok(waterLogService.updateLog(getUserId(authentication), id, request));
+    }
+
     @GetMapping
     public ResponseEntity<List<WaterLogResponseDto>> getLogs(
             Authentication authentication,

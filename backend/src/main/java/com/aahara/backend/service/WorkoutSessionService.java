@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,6 +21,13 @@ public class WorkoutSessionService {
 
     @Transactional
     public WorkoutSessionResponseDto createSession(String userId, WorkoutSessionRequestDto request) {
+        if (request.getClientId() != null) {
+            Optional<WorkoutSession> existing = sessionRepository.findByUserIdAndClientId(userId, request.getClientId());
+            if (existing.isPresent()) {
+                return mapToDto(existing.get());
+            }
+        }
+
         WorkoutSession session = WorkoutSession.builder()
             .id(UUID.randomUUID().toString())
             .userId(userId)
@@ -53,6 +61,7 @@ public class WorkoutSessionService {
         session.setEndTime(request.getEndTime());
         session.setNotes(request.getNotes());
         session.setRoutineId(request.getRoutineId());
+        if (request.getVersion() != null) session.setVersion(request.getVersion());
         return mapToDto(sessionRepository.save(session));
     }
 

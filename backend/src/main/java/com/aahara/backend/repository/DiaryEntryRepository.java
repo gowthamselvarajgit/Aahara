@@ -19,4 +19,5 @@ public interface DiaryEntryRepository extends JpaRepository<DiaryEntry, String> 
     
     List<DiaryEntry> findByUserIdAndEntryDate(String userId, LocalDate entryDate);
     Optional<DiaryEntry> findByIdAndUserId(String id, String userId);
+    Optional<DiaryEntry> findByUserIdAndClientId(String userId, String clientId);
 }

@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface WaterLogRepository extends JpaRepository<WaterLog, String> {
     List<WaterLog> findByUserIdAndEntryDate(String userId, LocalDate entryDate);
     Optional<WaterLog> findByIdAndUserId(String id, String userId);
+    Optional<WaterLog> findByUserIdAndClientId(String userId, String clientId);
 }

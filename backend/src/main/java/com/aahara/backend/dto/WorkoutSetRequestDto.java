@@ -34,4 +34,5 @@ public class WorkoutSetRequestDto {
     
     private Boolean isCompleted;
     private String clientId;
+    private Integer version;
 }

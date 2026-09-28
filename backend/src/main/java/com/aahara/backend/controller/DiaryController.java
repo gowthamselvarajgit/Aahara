@@ -15,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/diary")
@@ -28,6 +27,11 @@ public class DiaryController {
     public ResponseEntity<DiaryEntryResponseDto> createEntry(Authentication authentication, @Valid @RequestBody DiaryEntryRequestDto request) {
         String userId = getUserId(authentication);
         return ResponseEntity.status(HttpStatus.CREATED).body(diaryService.createEntry(userId, request));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DiaryEntryResponseDto> updateEntry(Authentication authentication, @PathVariable String id, @Valid @RequestBody DiaryEntryRequestDto request) {
+        return ResponseEntity.ok(diaryService.updateEntry(getUserId(authentication), id, request));
     }
 
     @GetMapping
