@@ -1,32 +1,24 @@
-import { SQLiteDatabase, Transaction } from 'react-native-sqlite-storage';
-
-export const runMigrations = async (db: SQLiteDatabase) => {
-  await db.transaction(async (tx: Transaction) => {
-    tx.executeSql(`
-      CREATE TABLE IF NOT EXISTS sync_metadata (
-        key TEXT PRIMARY KEY,
-        value TEXT
-      );
-    `);
-
-    tx.executeSql(
-      'SELECT value FROM sync_metadata WHERE key = "db_version"',
-      [],
-      (tx, results) => {
-        let version = 0;
-        if (results.rows.length > 0) {
-          version = parseInt(results.rows.item(0).value, 10);
-        }
-        applyMigrations(tx, version);
-      }
+export const runMigrations = async (db: any) => {
+  // We use executeSql directly for migrations
+  await db.executeSql(`
+    CREATE TABLE IF NOT EXISTS sync_metadata (
+      key TEXT PRIMARY KEY,
+      value TEXT
     );
-  });
+  `);
+
+  const [results] = await db.executeSql('SELECT value FROM sync_metadata WHERE key = "db_version"');
+  let version = 0;
+  if (results.rows.length > 0) {
+    version = parseInt(results.rows.item(0).value, 10);
+  }
+  
+  await applyMigrations(db, version);
 };
 
-const applyMigrations = (tx: Transaction, currentVersion: number) => {
+const applyMigrations = async (db: any, currentVersion: number) => {
   if (currentVersion < 1) {
-    // local_user_profile
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_user_profile (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -40,8 +32,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    // local_foods
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_foods (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -61,8 +52,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
     
-    // local_food_portions
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_food_portions (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -78,8 +68,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    // local_diary_entries
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_diary_entries (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -99,8 +88,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    // local_water_logs
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_water_logs (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -116,8 +104,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    // local_workout_sessions
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_workout_sessions (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -134,8 +121,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    // local_workout_sets
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_workout_sets (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -153,8 +139,7 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    // local_routines
-    tx.executeSql(`
+    await db.executeSql(`
       CREATE TABLE IF NOT EXISTS local_routines (
         local_id TEXT PRIMARY KEY,
         server_id TEXT UNIQUE,
@@ -170,6 +155,6 @@ const applyMigrations = (tx: Transaction, currentVersion: number) => {
       );
     `);
 
-    tx.executeSql('INSERT OR REPLACE INTO sync_metadata (key, value) VALUES ("db_version", "1")');
+    await db.executeSql('INSERT OR REPLACE INTO sync_metadata (key, value) VALUES ("db_version", "1")');
   }
 };

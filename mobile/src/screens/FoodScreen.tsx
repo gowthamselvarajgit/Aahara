@@ -20,6 +20,30 @@ export const FoodScreen = () => {
         />
       </View>
 
+      <AppText variant="subheading" style={styles.sectionTitle}>Categories</AppText>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+        <View style={styles.categories}>
+          {['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Drinks'].map((cat, index) => (
+            <View 
+              key={cat} 
+              style={[
+                styles.categoryBadge, 
+                { 
+                  backgroundColor: index === 0 ? theme.primary : theme.surfaceElevated, 
+                  borderRadius: theme.radius.full,
+                  borderColor: index === 0 ? theme.primary : theme.border,
+                  borderWidth: index === 0 ? 0 : 1,
+                }
+              ]}
+            >
+              <AppText variant="bodySmall" style={{ color: index === 0 ? '#FFF' : theme.textPrimary }}>
+                {cat}
+              </AppText>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
       <AppText variant="subheading" style={styles.sectionTitle}>Recent foods</AppText>
       
       <AaharaCard style={styles.foodCard} padding="md">
@@ -28,6 +52,7 @@ export const FoodScreen = () => {
           <AppText variant="button">Idli</AppText>
           <AppText variant="bodySmall" color="secondary">இட்லி</AppText>
         </View>
+        <AppText variant="metric" color="nutrition">60 <AppText variant="caption" color="muted">kcal</AppText></AppText>
       </AaharaCard>
 
       <AaharaCard style={styles.foodCard} padding="md">
@@ -36,6 +61,7 @@ export const FoodScreen = () => {
           <AppText variant="button">Dosa</AppText>
           <AppText variant="bodySmall" color="secondary">தோசை</AppText>
         </View>
+        <AppText variant="metric" color="nutrition">130 <AppText variant="caption" color="muted">kcal</AppText></AppText>
       </AaharaCard>
 
       <AaharaCard style={styles.foodCard} padding="md">
@@ -44,16 +70,17 @@ export const FoodScreen = () => {
           <AppText variant="button">Pongal</AppText>
           <AppText variant="bodySmall" color="secondary">பொங்கல்</AppText>
         </View>
+        <AppText variant="metric" color="nutrition">210 <AppText variant="caption" color="muted">kcal</AppText></AppText>
       </AaharaCard>
 
-      <AppText variant="subheading" style={styles.sectionTitle}>Categories</AppText>
-      <View style={styles.categories}>
-        {['Breakfast', 'Lunch', 'Dinner', 'Snacks', 'Drinks'].map((cat) => (
-          <View key={cat} style={[styles.categoryBadge, { backgroundColor: theme.surfaceElevated, borderRadius: theme.radius.full }]}>
-            <AppText variant="bodySmall">{cat}</AppText>
-          </View>
-        ))}
-      </View>
+      <AaharaCard style={styles.foodCard} padding="md">
+        <ThreeDAsset assetName="chicken_biryani" size={70} />
+        <View style={styles.foodInfo}>
+          <AppText variant="button">Chicken Biryani</AppText>
+          <AppText variant="bodySmall" color="secondary">சிக்கன் பிரியாணி</AppText>
+        </View>
+        <AppText variant="metric" color="nutrition">400 <AppText variant="caption" color="muted">kcal</AppText></AppText>
+      </AaharaCard>
     </ScrollView>
   );
 };
@@ -72,7 +99,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     paddingHorizontal: 20,
     paddingVertical: 12,
-    marginBottom: 32,
+    marginBottom: 24,
   },
   searchInput: {
     fontSize: 16,
@@ -90,13 +117,17 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 16,
   },
+  categoriesScroll: {
+    marginHorizontal: -24,
+    marginBottom: 24,
+  },
   categories: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    paddingHorizontal: 24,
     gap: 12,
   },
   categoryBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   }
 });

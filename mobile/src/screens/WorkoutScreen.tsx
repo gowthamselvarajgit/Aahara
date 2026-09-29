@@ -11,46 +11,46 @@ export const WorkoutScreen = () => {
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.background }]} contentContainerStyle={styles.content}>
       <AppText variant="subheading" color="secondary" style={styles.dateLabel}>Today's Workout</AppText>
-      <AppText variant="display" style={styles.header}>Upper Body</AppText>
+      <AppText variant="display" style={styles.header}>Full Body</AppText>
 
       <View style={styles.heroAssetContainer}>
         <ThreeDAsset assetName="dumbbell" size={200} />
       </View>
       
-      <View style={styles.durationBadge}>
-        <AppText variant="metric" color="brand">45 min</AppText>
+      <View style={[styles.durationBadge, { backgroundColor: theme.workoutSoft }]}>
+        <AppText variant="metric" style={{ color: theme.workout }}>45 min</AppText>
       </View>
 
       <AppText variant="subheading" style={styles.sectionTitle}>Exercises</AppText>
 
       <AaharaCard style={styles.exerciseCard} padding="md">
-        <ThreeDAsset assetName="dumbbell" size={60} />
+        <ThreeDAsset assetName="bench_press" size={60} />
         <View style={styles.exerciseInfo}>
           <AppText variant="button">Bench Press</AppText>
-          <AppText variant="bodySmall" color="secondary">Chest · Triceps</AppText>
+          <AppText variant="bodySmall" color="secondary">Chest • Triceps</AppText>
           <AppText variant="caption" color="muted" style={{marginTop: 4}}>4 sets</AppText>
         </View>
-        <AppText variant="metric">60 kg × 8</AppText>
+        <AppText variant="metric" color="workout">60kg × 8</AppText>
       </AaharaCard>
 
       <AaharaCard style={styles.exerciseCard} padding="md">
-        <ThreeDAsset assetName="dumbbell" size={60} />
+        <ThreeDAsset assetName="barbell_squat" size={60} />
         <View style={styles.exerciseInfo}>
-          <AppText variant="button">Incline Dumbbell Press</AppText>
-          <AppText variant="bodySmall" color="secondary">Chest · Shoulders</AppText>
-          <AppText variant="caption" color="muted" style={{marginTop: 4}}>3 sets</AppText>
+          <AppText variant="button">Barbell Squat</AppText>
+          <AppText variant="bodySmall" color="secondary">Legs • Glutes</AppText>
+          <AppText variant="caption" color="muted" style={{marginTop: 4}}>4 sets</AppText>
         </View>
-        <AppText variant="metric">22 kg × 10</AppText>
+        <AppText variant="metric" color="workout">80kg × 8</AppText>
       </AaharaCard>
 
       <AaharaCard style={styles.exerciseCard} padding="md">
         <ThreeDAsset assetName="dumbbell" size={60} />
         <View style={styles.exerciseInfo}>
           <AppText variant="button">Cable Row</AppText>
-          <AppText variant="bodySmall" color="secondary">Back · Biceps</AppText>
+          <AppText variant="bodySmall" color="secondary">Back • Biceps</AppText>
           <AppText variant="caption" color="muted" style={{marginTop: 4}}>4 sets</AppText>
         </View>
-        <AppText variant="metric">50 kg × 10</AppText>
+        <AppText variant="metric" color="workout">50kg × 10</AppText>
       </AaharaCard>
       
     </ScrollView>
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 9999,
-    backgroundColor: '#F9EBE6', // workoutSoft equivalent
     marginBottom: 32,
   },
   sectionTitle: {

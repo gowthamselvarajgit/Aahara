@@ -3,6 +3,12 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { ApiError } from '../src/types/models';
 
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(),
+  setItemAsync: jest.fn(),
+  deleteItemAsync: jest.fn(),
+}));
+
 const mock = new MockAdapter(apiClient);
 
 describe('API Client', () => {

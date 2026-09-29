@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer, DefaultTheme, DarkTheme as NavDarkTheme } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { initDb } from './src/database/sqlite/db';
 import { useAuthStore } from './src/store/useAuthStore';
 import { AppText } from './src/components/AppText';
-import { View } from 'react-native';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';

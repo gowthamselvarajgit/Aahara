@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { AppText } from '../components/AppText';
 import { useTheme } from '../theme/useTheme';
 import { AaharaCard } from '../components/AaharaCard';
 import { ThreeDAsset } from '../components/ThreeDAsset';
+import { ProgressBar } from '../components/ProgressBar';
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -15,6 +16,15 @@ export const HomeScreen = () => {
         <AppText variant="body" color="secondary">Monday, 28 September</AppText>
       </View>
 
+      <View style={styles.dateSelector}>
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+          <TouchableOpacity key={i} style={[styles.dateBubble, i === 1 && { backgroundColor: theme.primary }]}>
+            <AppText variant="caption" style={{ color: i === 1 ? '#FFF' : theme.textSecondary }}>{day}</AppText>
+            <AppText variant="bodySmall" style={{ color: i === 1 ? '#FFF' : theme.textPrimary }}>{27 + i}</AppText>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <AaharaCard style={styles.heroCard} padding="lg">
         <View style={styles.heroContent}>
           <View style={styles.heroText}>
@@ -23,8 +33,8 @@ export const HomeScreen = () => {
               <AppText variant="largeNumber">1,650</AppText>
               <AppText variant="body" color="muted"> / 2,200 kcal</AppText>
             </View>
-            <AppText variant="metric" color="success">75%</AppText>
-            <AppText variant="bodySmall" color="secondary">Calories logged</AppText>
+            <ProgressBar progress={0.75} style={styles.mainProgress} />
+            <AppText variant="bodySmall" color="secondary" style={styles.progressText}>75% Calories logged</AppText>
           </View>
           <ThreeDAsset assetName="idli" size={100} style={styles.heroAsset} />
         </View>
@@ -37,7 +47,7 @@ export const HomeScreen = () => {
             <AppText variant="metric">82</AppText>
             <AppText variant="caption" color="muted"> / 120 g</AppText>
           </View>
-          <AppText variant="bodySmall" color="brand">68%</AppText>
+          <ProgressBar progress={82/120} height={4} />
         </AaharaCard>
         
         <AaharaCard variant="muted" style={styles.macroCard} padding="md">
@@ -46,7 +56,7 @@ export const HomeScreen = () => {
             <AppText variant="metric">180</AppText>
             <AppText variant="caption" color="muted"> / 250 g</AppText>
           </View>
-          <AppText variant="bodySmall" color="brand">72%</AppText>
+          <ProgressBar progress={180/250} height={4} />
         </AaharaCard>
 
         <AaharaCard variant="muted" style={styles.macroCard} padding="md">
@@ -55,7 +65,7 @@ export const HomeScreen = () => {
             <AppText variant="metric">55</AppText>
             <AppText variant="caption" color="muted"> / 73 g</AppText>
           </View>
-          <AppText variant="bodySmall" color="brand">75%</AppText>
+          <ProgressBar progress={55/73} height={4} />
         </AaharaCard>
       </View>
 
@@ -73,7 +83,7 @@ export const HomeScreen = () => {
         <ThreeDAsset assetName="pongal" size={60} />
         <View style={styles.mealInfo}>
           <AppText variant="button">Lunch</AppText>
-          <AppText variant="bodySmall" color="secondary">Ven Pongal (பொங்கல்)</AppText>
+          <AppText variant="bodySmall" color="secondary">Ven Pongal (வெண் பொங்கல்)</AppText>
         </View>
         <AppText variant="metric">420</AppText>
       </AaharaCard>
@@ -81,9 +91,10 @@ export const HomeScreen = () => {
       <AppText variant="subheading" style={styles.sectionTitle}>Hydration</AppText>
       <AaharaCard style={styles.hydrationCard}>
         <View style={styles.hydrationContent}>
-          <View>
+          <View style={styles.hydrationInfo}>
             <AppText variant="largeNumber">1.8<AppText variant="body" color="muted"> / 2.5 L</AppText></AppText>
-            <AppText variant="metric" color="brand">72%</AppText>
+            <ProgressBar progress={1.8/2.5} color="#4FC3F7" style={styles.waterProgress} />
+            <AppText variant="bodySmall" color="secondary">72% of daily goal</AppText>
           </View>
           <ThreeDAsset assetName="water" size={80} />
         </View>
@@ -115,6 +126,17 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: 24,
   },
+  dateSelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  dateBubble: {
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 24,
+  },
   heroCard: {
     marginBottom: 24,
   },
@@ -131,6 +153,12 @@ const styles = StyleSheet.create({
     alignItems: 'baseline',
     marginVertical: 4,
   },
+  mainProgress: {
+    marginVertical: 8,
+  },
+  progressText: {
+    marginTop: 4,
+  },
   heroAsset: {
     marginLeft: 16,
   },
@@ -146,7 +174,7 @@ const styles = StyleSheet.create({
   macroValue: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    marginVertical: 4,
+    marginVertical: 8,
   },
   sectionTitle: {
     marginBottom: 16,
@@ -168,6 +196,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  hydrationInfo: {
+    flex: 1,
+    marginRight: 16,
+  },
+  waterProgress: {
+    marginVertical: 8,
   },
   workoutCard: {
     marginBottom: 32,

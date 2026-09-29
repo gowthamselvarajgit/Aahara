@@ -5,7 +5,7 @@ import { typography } from '../theme/typography';
 
 interface AppTextProps extends TextProps {
   variant?: keyof typeof typography;
-  color?: 'primary' | 'secondary' | 'muted' | 'brand' | 'error' | 'success' | 'warning';
+  color?: 'primary' | 'secondary' | 'muted' | 'brand' | 'error' | 'success' | 'warning' | 'nutrition' | 'workout';
 }
 
 export const AppText: React.FC<AppTextProps> = ({ 
@@ -25,6 +25,8 @@ export const AppText: React.FC<AppTextProps> = ({
       case 'error': return theme.error;
       case 'success': return theme.success;
       case 'warning': return theme.warning;
+      case 'nutrition': return theme.primary; // Or appropriate nutrition color
+      case 'workout': return theme.primary; // Or appropriate workout color
       case 'primary':
       default: return theme.textPrimary;
     }

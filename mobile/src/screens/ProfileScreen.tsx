@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import { AppText } from '../components/AppText';
 import { useTheme } from '../theme/useTheme';
 import { AaharaCard } from '../components/AaharaCard';
+import { AppButton } from '../components/AppButton';
 
 export const ProfileScreen = () => {
   const theme = useTheme();
@@ -10,7 +11,7 @@ export const ProfileScreen = () => {
   const renderSettingRow = (label: string) => (
     <View style={[styles.settingRow, { borderBottomColor: theme.border }]}>
       <AppText variant="body">{label}</AppText>
-      <AppText variant="body" color="muted">›</AppText>
+      <AppText variant="body" color="muted">→</AppText>
     </View>
   );
 
@@ -34,6 +35,8 @@ export const ProfileScreen = () => {
         {renderSettingRow('Account')}
         {renderSettingRow('Privacy')}
       </AaharaCard>
+
+      <AppButton title="Log Out" onPress={() => {}} variant="outline" />
     </ScrollView>
   );
 };

@@ -7,6 +7,7 @@ import { FoodScreen } from '../screens/FoodScreen';
 import { WorkoutScreen } from '../screens/WorkoutScreen';
 import { ProgressScreen } from '../screens/ProgressScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
+import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { useTheme } from '../theme/useTheme';
 
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,7 @@ const MainTabs = () => {
 export const RootNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
     </Stack.Navigator>
   );

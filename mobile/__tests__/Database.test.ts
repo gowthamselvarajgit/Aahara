@@ -4,12 +4,13 @@ jest.mock('uuid', () => ({
   v4: () => 'test-uuid-001',
 }));
 
-jest.mock('react-native-sqlite-storage', () => {
+jest.mock('expo-sqlite', () => {
   return {
-    enablePromise: () => {},
-    openDatabase: () => Promise.resolve({
-      transaction: () => {},
-      executeSql: jest.fn().mockResolvedValue([{ rows: { length: 0, item: () => null } }]),
+    openDatabaseAsync: jest.fn().mockResolvedValue({
+      withTransactionAsync: (cb: any) => cb(),
+      runAsync: jest.fn().mockResolvedValue({ lastInsertRowId: 1, changes: 1 }),
+      getAllAsync: jest.fn().mockResolvedValue([]),
+      execAsync: jest.fn(),
     }),
   };
 });

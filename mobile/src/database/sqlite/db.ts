@@ -1,22 +1,89 @@
-import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
+import * as SQLite from 'expo-sqlite';
 import { runMigrations } from '../migrations';
 
-SQLite.enablePromise(true);
+let dbInstance: any | null = null;
 
-let dbInstance: SQLiteDatabase | null = null;
-
-export const getDb = async (): Promise<SQLiteDatabase> => {
+export const getDb = async (): Promise<any> => {
   if (dbInstance) return dbInstance;
   
-  dbInstance = await SQLite.openDatabase({
-    name: 'aahara.db',
-    location: 'default',
-  });
+  const rawDb = await SQLite.openDatabaseAsync('aahara.db');
   
-  // Enforce foreign keys
-  await dbInstance.executeSql('PRAGMA foreign_keys = ON;');
+  const wrapper = {
+    executeSql: async (query: string, params: any[] = []) => {
+      try {
+        if (query.trim().toLowerCase().startsWith('select') || query.trim().toLowerCase().startsWith('pragma')) {
+          const result = await rawDb.getAllAsync(query, params);
+          return [{
+             insertId: undefined,
+             rowsAffected: 0,
+             rows: {
+                length: result.length,
+                item: (index: number) => result[index]
+             }
+          }];
+        } else {
+          const result = await rawDb.runAsync(query, params);
+          return [{
+             insertId: result.lastInsertRowId,
+             rowsAffected: result.changes,
+             rows: {
+                length: 0,
+                item: () => null
+             }
+          }];
+        }
+      } catch (e) {
+         throw e;
+      }
+    },
+    transaction: async (cb: (tx: any) => Promise<void> | void) => {
+      await rawDb.withTransactionAsync(async () => {
+         const txWrapper = {
+            executeSql: async (query: string, params: any[] = [], successCb?: any, errorCb?: any) => {
+               try {
+                  let r;
+                  if (query.trim().toLowerCase().startsWith('select') || query.trim().toLowerCase().startsWith('pragma')) {
+                    const result = await rawDb.getAllAsync(query, params);
+                    r = {
+                       insertId: undefined,
+                       rowsAffected: 0,
+                       rows: {
+                          length: result.length,
+                          item: (index: number) => result[index]
+                       }
+                    };
+                  } else {
+                    const result = await rawDb.runAsync(query, params);
+                    r = {
+                       insertId: result.lastInsertRowId,
+                       rowsAffected: result.changes,
+                       rows: {
+                          length: 0,
+                          item: () => null
+                       }
+                    };
+                  }
+                  if (successCb) {
+                     successCb(txWrapper, r);
+                  }
+               } catch (e) {
+                  if (errorCb) {
+                     errorCb(txWrapper, e);
+                  } else {
+                     throw e;
+                  }
+               }
+            }
+         };
+         await cb(txWrapper);
+      });
+    }
+  };
+
+  await rawDb.execAsync('PRAGMA foreign_keys = ON;');
   
-  return dbInstance;
+  dbInstance = wrapper;
+  return wrapper;
 };
 
 export const initDb = async (): Promise<void> => {

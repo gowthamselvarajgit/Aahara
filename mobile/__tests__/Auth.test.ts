@@ -1,10 +1,10 @@
 import { getAccessToken, setAccessToken, clearAccessToken } from '../src/auth_service/storage';
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 
-jest.mock('react-native-keychain', () => ({
-  getGenericPassword: jest.fn(),
-  setGenericPassword: jest.fn(),
-  resetGenericPassword: jest.fn(),
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(),
+  setItemAsync: jest.fn(),
+  deleteItemAsync: jest.fn(),
 }));
 
 describe('Secure Token Storage', () => {
@@ -12,19 +12,19 @@ describe('Secure Token Storage', () => {
     jest.clearAllMocks();
   });
 
-  it('saves token securely via Keychain', async () => {
+  it('saves token securely via SecureStore', async () => {
     await setAccessToken('test-jwt');
-    expect(Keychain.setGenericPassword).toHaveBeenCalledWith('aahara_user', 'test-jwt', { service: 'com.aahara.auth' });
+    expect(SecureStore.setItemAsync).toHaveBeenCalledWith('com.aahara.auth', 'test-jwt');
   });
 
   it('retrieves token securely', async () => {
-    (Keychain.getGenericPassword as jest.Mock).mockResolvedValue({ password: 'saved-jwt' });
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('saved-jwt');
     const token = await getAccessToken();
     expect(token).toBe('saved-jwt');
   });
 
   it('deletes token cleanly on logout', async () => {
     await clearAccessToken();
-    expect(Keychain.resetGenericPassword).toHaveBeenCalledWith({ service: 'com.aahara.auth' });
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('com.aahara.auth');
   });
 });
